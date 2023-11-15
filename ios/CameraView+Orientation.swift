@@ -12,35 +12,10 @@ import AVFoundation
 
 extension CameraView {
   
-  private func interfaceOrientation(from: UIDeviceOrientation) -> UIInterfaceOrientation {
-    switch (from) {
-      case .landscapeLeft:
-        return .landscapeRight
-      case .landscapeRight:
-        return .landscapeLeft
-      case .portraitUpsideDown:
-        return .portraitUpsideDown
-      default:
-        return .portrait
-    }
-  }
-  
-  private func captureVideoOrientation(from: UIInterfaceOrientation) -> AVCaptureVideoOrientation {
-    switch (from) {
-      case .landscapeLeft:
-        return .landscapeLeft
-      case .landscapeRight:
-        return .landscapeRight
-      case .portraitUpsideDown:
-        return .portraitUpsideDown
-      default:
-        return .portrait
-    }
-  }
-  
+
   /// Orientation of the input connection (preview)
   private var inputOrientation: UIInterfaceOrientation {
-    return self.interfaceOrientation(from: UIDevice.current.orientation)
+    return .portrait
   }
 
   // Orientation of the output connections (photo, video, frame processor)
@@ -69,16 +44,6 @@ extension CameraView {
         connection.setInterfaceOrientation(connectionOrientation)
       }
     }
-    
-    // update the preview layer orientation when the user rotates the device
-    // adapted from https://stackoverflow.com/a/36575423
-    DispatchQueue.main.async {
-      if let previewLayerConnection: AVCaptureConnection = self.videoPreviewLayer.connection {
-        if previewLayerConnection.isVideoOrientationSupported {
-          previewLayerConnection.videoOrientation = self.captureVideoOrientation(from: connectionOrientation)
-          self.videoPreviewLayer.frame = self.bounds
-        }
-      }
-    }
+
   }
 }
