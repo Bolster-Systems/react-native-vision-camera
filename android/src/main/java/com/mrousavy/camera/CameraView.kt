@@ -302,10 +302,6 @@ class CameraView(context: Context, private val frameProcessorThread: ExecutorSer
   }
 
   override fun onDetachedFromWindow() {
-    coroutineScope.launch {
-      val cameraProvider = ProcessCameraProvider.getInstance(reactContext).await()
-      cameraProvider.unbindAll()
-    }
     super.onDetachedFromWindow()
     updateLifecycleState()
   }
@@ -508,8 +504,8 @@ class CameraView(context: Context, private val frameProcessorThread: ExecutorSer
 
       preview = previewBuilder.build()
       Log.i(TAG, "Attaching ${useCases.size} use-cases...")
-      camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview, *useCases.toTypedArray())
       preview!!.setSurfaceProvider(previewView.surfaceProvider)
+      camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview, *useCases.toTypedArray())
 
       minZoom = camera!!.cameraInfo.zoomState.value?.minZoomRatio ?: 1f
       maxZoom = camera!!.cameraInfo.zoomState.value?.maxZoomRatio ?: 1f
